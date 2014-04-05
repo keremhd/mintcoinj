@@ -21,18 +21,18 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.google</groupId>
-        <artifactId>bitcoinj-parent</artifactId>
+        <artifactId>mintcoinj-parent</artifactId>
         <version>0.12-SNAPSHOT</version>
     </parent>
 
-    <artifactId>bitcoinj</artifactId>
+    <artifactId>mintcoinj</artifactId>
 
-    <name>bitcoinj</name>
-    <description>A Java Bitcoin library</description>
+    <name>mintcoinj</name>
+    <description>A Java Mintcoin library</description>
 
     <packaging>jar</packaging>
 
-    <url>https://code.google.com/p/bitcoinj</url>
+    <url>https://github.com/keremhd/mintcoinj</url>
 
     <licenses>
         <license>
@@ -47,6 +47,10 @@
         <developer>
             <name>The bitcoinj team</name>
             <email>bitcoinj@googlegroups.com</email>
+        </developer>
+        <developer>
+            <name>The mintcoinj team</name>
+            <email>keremhd@users.noreply.github.com</email>
         </developer>
     </developers>
 
