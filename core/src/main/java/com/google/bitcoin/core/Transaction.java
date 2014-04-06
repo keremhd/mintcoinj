@@ -98,6 +98,7 @@ public class Transaction extends ChildMessage implements Serializable {
     private ArrayList<TransactionInput> inputs;
     private ArrayList<TransactionOutput> outputs;
 
+    private long time;     // MintCoin
     private long lockTime;
 
     // This is either the time the transaction was broadcast as measured from the local clock, or the time from the
@@ -523,6 +524,9 @@ public class Transaction extends ChildMessage implements Serializable {
 
         version = readUint32();
         optimalEncodingMessageSize = 4;
+
+        time = readUint32();   // MintCoin
+        optimalEncodingMessageSize += 4;
 
         // First come the inputs.
         long numInputs = readVarInt();
@@ -1076,6 +1080,7 @@ public class Transaction extends ChildMessage implements Serializable {
     @Override
     protected void bitcoinSerializeToStream(OutputStream stream) throws IOException {
         uint32ToByteStreamLE(version, stream);
+        uint32ToByteStreamLE(time, stream);  // MintCoin
         stream.write(new VarInt(inputs.size()).encode());
         for (TransactionInput in : inputs)
             in.bitcoinSerialize(stream);
@@ -1085,6 +1090,18 @@ public class Transaction extends ChildMessage implements Serializable {
         uint32ToByteStreamLE(lockTime, stream);
     }
 
+    // MintCoin
+    public long getTime() {
+        maybeParse();
+        return time;
+    }
+
+    // MintCoin
+    public void setTime(long time) {
+        unCache();
+        // TODO: Consider checking that at least one input has a non-final sequence number.
+        this.time = time;
+    }
 
     /**
      * Transactions can have an associated lock time, specified either as a block height or in seconds since the

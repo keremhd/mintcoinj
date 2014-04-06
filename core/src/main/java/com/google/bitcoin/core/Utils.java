@@ -19,6 +19,7 @@ package com.google.bitcoin.core;
 
 import com.google.common.base.Charsets;
 import com.google.common.primitives.UnsignedLongs;
+import com.lambdaworks.crypto.SCrypt;
 import org.spongycastle.crypto.digests.RIPEMD160Digest;
 import org.spongycastle.util.encoders.Hex;
 
@@ -66,7 +67,7 @@ public class Utils {
      * The term nanocoin is very misleading, though, because there are only 100 million
      * of them in a coin (whereas one would expect 1 billion.
      */
-    public static final BigInteger COIN = new BigInteger("100000000", 10);
+    public static final BigInteger COIN = new BigInteger("1000000", 10);
 
     /**
      * How many "nanocoins" there are in 0.01 BitCoins.
@@ -75,7 +76,7 @@ public class Utils {
      * The term nanocoin is very misleading, though, because there are only 100 million
      * of them in a coin (whereas one would expect 1 billion).
      */
-    public static final BigInteger CENT = new BigInteger("1000000", 10);
+    public static final BigInteger CENT = new BigInteger("10000", 10);
     private static BlockingQueue<Boolean> mockSleepQueue;
 
     /**
@@ -181,6 +182,19 @@ public class Utils {
         if (bytes.length < 8) {
             for (int i = 0; i < 8 - bytes.length; i++)
                 stream.write(0);
+        }
+    }
+
+    /**
+     * Calculates the Scrypt hash of the given bytes. This is
+     * standard procedure in Mintcoin for hashing blocks.
+     * The resulting hash is in big endian form.
+     */
+    public static byte[] scryptDigest(byte[] input) {
+    try {
+        return SCrypt.scrypt(input, input, 1024, 1, 1, 32);
+        } catch (Exception e) {
+            return null;
         }
     }
 

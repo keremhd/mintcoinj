@@ -37,6 +37,7 @@ import java.util.List;
 
 import static com.google.bitcoin.core.Utils.doubleDigest;
 import static com.google.bitcoin.core.Utils.doubleDigestTwoBuffers;
+import static com.google.bitcoin.core.Utils.scryptDigest;
 
 /**
  * <p>A block is a group of transactions, and is one of the fundamental data structures of the Bitcoin system.
@@ -503,7 +504,7 @@ public class Block extends Message {
         try {
             ByteArrayOutputStream bos = new UnsafeByteArrayOutputStream(HEADER_SIZE);
             writeHeader(bos);
-            return new Sha256Hash(Utils.reverseBytes(doubleDigest(bos.toByteArray())));
+            return new Sha256Hash(Utils.reverseBytes(scryptDigest(bos.toByteArray())));
         } catch (IOException e) {
             throw new RuntimeException(e); // Cannot happen.
         }

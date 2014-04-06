@@ -47,11 +47,12 @@ public abstract class NetworkParameters implements Serializable {
 
     /**
      * The alert signing key originally owned by Satoshi, and now passed on to Gavin along with a few others.
+     * MintCoin Alert Key
      */
-    public static final byte[] SATOSHI_KEY = Hex.decode("04fc9702847840aaf195de8442ebecedf5b095cdbb9bc716bda9110971b28a49e0ead8564ff0db22209e0374782c093bb899692d524e9d6a6956e7c5ecbcd68284");
+    public static final byte[] SATOSHI_KEY = Hex.decode("043fa441fd4203d03f5df2b75ea14e36f20d39f43e7a61aa7552ab9bcd7ecb0e77a3be4585b13fcdaa22ef6e51f1ff6f2929bec2494385b086fb86610e33193195");
 
     /** The string returned by getId() for the main, production network where people trade things. */
-    public static final String ID_MAINNET = "org.bitcoin.production";
+    public static final String ID_MAINNET = "org.mintcoin.production";
     /** The string returned by getId() for the testnet. */
     public static final String ID_TESTNET = "org.bitcoin.test";
     /** Unit test network. */
@@ -66,6 +67,7 @@ public abstract class NetworkParameters implements Serializable {
 
     protected Block genesisBlock;
     protected BigInteger proofOfWorkLimit;
+    protected BigInteger proofOfStakeLimit;
     protected int port;
     protected long packetMagic;
     protected int addressHeader;
@@ -85,6 +87,7 @@ public abstract class NetworkParameters implements Serializable {
      * The depth of blocks required for a coinbase transaction to be spendable.
      */
     protected int spendableCoinbaseDepth;
+    protected int spendableStakebaseDepth;
     protected int subsidyDecreaseBlockCount;
     
     protected int[] acceptableAddressCodes;
@@ -102,15 +105,16 @@ public abstract class NetworkParameters implements Serializable {
         try {
             // A script containing the difficulty bits and the following message:
             //
-            //   "The Times 03/Jan/2009 Chancellor on brink of second bailout for banks"
+            //   "Feb 2, 2014: The Denver Broncos finally got on the board with a touchdown in the final "
+            //   + "seconds of the third quarter. But the Seattle Seahawks are dominating the Broncos 36-8"
             byte[] bytes = Hex.decode
-                    ("04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73");
+                    ("04ffff001d020f274cad46656220322c20323031343a205468652044656e7665722042726f6e636f732066696e616c6c7920676f74206f6e2074686520626f6172642077697468206120746f756368646f776e20696e207468652066696e616c207365636f6e6473206f662074686520746869726420717561727465722e20427574207468652053656174746c65205365616861776b732061726520646f6d696e6174696e67207468652042726f6e636f732033362d38");
             t.addInput(new TransactionInput(n, t, bytes));
             ByteArrayOutputStream scriptPubKeyBytes = new ByteArrayOutputStream();
-            Script.writeBytes(scriptPubKeyBytes, Hex.decode
-                    ("04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f"));
-            scriptPubKeyBytes.write(ScriptOpCodes.OP_CHECKSIG);
-            t.addOutput(new TransactionOutput(n, t, Utils.toNanoCoins(50, 0), scriptPubKeyBytes.toByteArray()));
+            //Script.writeBytes(scriptPubKeyBytes, Hex.decode
+            //        (""));
+            //scriptPubKeyBytes.write(ScriptOpCodes.OP_CHECKSIG);
+            t.addOutput(new TransactionOutput(n, t, Utils.toNanoCoins(0, 0), scriptPubKeyBytes.toByteArray()));
         } catch (Exception e) {
             // Cannot happen.
             throw new RuntimeException(e);
@@ -119,8 +123,10 @@ public abstract class NetworkParameters implements Serializable {
         return genesisBlock;
     }
 
-    public static final int TARGET_TIMESPAN = 14 * 24 * 60 * 60;  // 2 weeks per difficulty cycle, on average.
-    public static final int TARGET_SPACING = 10 * 60;  // 10 minutes per block.
+    public static final int TARGET_TIMESPAN = 30 * 30;  // MintCoin
+    public static final int TARGET_SPACING_STAKE = 30;  // MintCoin
+    public static final int TARGET_SPACING_WORK_MAX = 3 * TARGET_SPACING_STAKE;  // MintCoin
+    public static final int TARGET_SPACING = TARGET_SPACING_WORK_MAX; // TODO ?
     public static final int INTERVAL = TARGET_TIMESPAN / TARGET_SPACING;
     
     /**
@@ -133,7 +139,7 @@ public abstract class NetworkParameters implements Serializable {
     /**
      * The maximum money to be generated
      */
-    public static final BigInteger MAX_MONEY = new BigInteger("21000000", 10).multiply(COIN);
+    public static final BigInteger MAX_MONEY = new BigInteger("70000000000", 10).multiply(COIN);
 
     /** Alias for TestNet3Params.get(), use that instead. */
     @Deprecated
