@@ -17,6 +17,7 @@
 package com.google.bitcoin.core;
 
 import com.google.bitcoin.params.MainNetParams;
+import com.google.bitcoin.params.MinttestNetParams;
 import com.google.bitcoin.params.TestNet3Params;
 import com.google.bitcoin.script.Script;
 
@@ -124,7 +125,7 @@ public class Address extends VersionedChecksummedBytes {
     @Nullable
     public NetworkParameters getParameters() {
         // TODO: There should be a more generic way to get all supported networks.
-        NetworkParameters[] networks = { TestNet3Params.get(), MainNetParams.get() };
+        NetworkParameters[] networks = { /* MinttestNetParams.get(), */ MainNetParams.get() }; // MintCoin: Do we have a working Testnet?
         for (NetworkParameters params : networks) {
             if (isAcceptableVersion(params, version)) {
                 return params;

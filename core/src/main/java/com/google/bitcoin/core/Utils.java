@@ -199,6 +199,16 @@ public class Utils {
     }
 
     /**
+     * See {@link Utils#scryptDigest(byte[])}.
+     */
+    public static byte[] scryptDigest(byte[] input, int offset, int length) {
+        if (offset == 0 && length == input.length)
+            return scryptDigest(input);
+        else
+            return scryptDigest(Arrays.copyOfRange(input, offset, offset+length));
+    }
+
+    /**
      * See {@link Utils#doubleDigest(byte[], int, int)}.
      */
     public static byte[] doubleDigest(byte[] input) {

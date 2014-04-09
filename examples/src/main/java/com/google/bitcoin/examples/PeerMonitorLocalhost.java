@@ -75,7 +75,7 @@ public class PeerMonitorLocalhost {
         peerGroup.setMaxConnections(4);
 
         try {
-            peerGroup.addAddress(InetAddress.getByName("127.0.0.1"));
+            peerGroup.addAddress(InetAddress.getLocalHost());
         }
         catch (UnknownHostException e)
         {

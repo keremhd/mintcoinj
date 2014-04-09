@@ -17,6 +17,7 @@
 package com.google.bitcoin.examples;
 
 import com.google.bitcoin.core.*;
+import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.params.TestNet3Params;
 import com.google.bitcoin.store.BlockStore;
 import com.google.bitcoin.store.MemoryBlockStore;
@@ -32,7 +33,7 @@ public class FetchBlock {
     public static void main(String[] args) throws Exception {
         BriefLogFormatter.init();
         System.out.println("Connecting to node");
-        final NetworkParameters params = TestNet3Params.get();
+        final NetworkParameters params = MainNetParams.get();
 
         BlockStore blockStore = new MemoryBlockStore(params);
         BlockChain chain = new BlockChain(params, blockStore);
@@ -43,7 +44,17 @@ public class FetchBlock {
         peerGroup.waitForPeers(1).get();
         Peer peer = peerGroup.getConnectedPeers().get(0);
 
-        Sha256Hash blockHash = new Sha256Hash(args[0]);
+        String blockHashStr;
+        if (args.length > 0) {
+            blockHashStr = args[0];
+        }
+        else {
+            //blockHashStr = "00000dd1b1e4472dde86b27f6775efdafc421017fc9ffdb0b863603608b9353e"; // MintCoin Block#1 PoW
+            //blockHashStr = "00000862b2517848516b64052f50d7a4f6abbd152d6cc6b95d7920a9c1183ff4"; // MintCoin Block#2 PoW
+            blockHashStr = "91429b11b38264fddb2c817ec82fd7229ff59b32bf8059a863a34b7d4c937dda"; // MintCoin Block#233222 PoS
+        }
+
+        Sha256Hash blockHash = new Sha256Hash(blockHashStr);
         Future<Block> future = peer.getBlock(blockHash);
         System.out.println("Waiting for node to send us the requested block: " + blockHash);
         Block block = future.get();
